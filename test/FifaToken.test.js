@@ -11,7 +11,10 @@ describe('deployment',async() => {
 		contract = await FifaToken.deployed();
 		const address = contract.address;
 		console.log(address);
-		assert.notEqual(address,'');
+		assert.notEqual(address, '');
+		assert.notEqual(address, 0x0);
+		assert.notEqual(address, null);
+		assert.notEqual(address, undefined);
 	})
 })
 
