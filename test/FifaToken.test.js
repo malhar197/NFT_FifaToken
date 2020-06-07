@@ -32,14 +32,21 @@ describe('deployment',async() => {
 	})
 })
 
+describe('ERC 165 compliance', async() => {
+	it('Checks if Token is ERC 165 compliant', async() => {
+		const ERC165test = await contract.supportsInterface.call('0x01ffc9a7') //0x01ffc9a7 is ERC165 interface ID.
+	})
+})
+
 describe('minting', async() => {
 	it('creates a new token', async () => {
-		const result = await contract.mint({
+		const player1 = {
 			name: "Messi",
 			position: "Striker",
 			club: "FC Barcelona",
 			country: "Argentina"
-		});
+		};
+		const result = await contract.mint(player1);
 		const totalSupply = await contract.totalSupply();
 		//SUCCESS
 		assert.equal(totalSupply,1);
@@ -57,5 +64,4 @@ describe('minting', async() => {
 		}).should.be.rejected;
 	})
 })
-
 })
