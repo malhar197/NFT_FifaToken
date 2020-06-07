@@ -78,4 +78,11 @@ describe('balanceOf function test', async() => {
 		assert(balanceof2,0,'Balance is zero');
 	})
 })
+
+describe('ownerOf function test', async() => {
+	it('checks if correct owner is returned for a token ID', async() => {
+		const ownerOf = await contract.ownerOf.call(0);
+		assert(ownerOf,accounts[0],'Correct owner identified');
+	})
+})
 })
