@@ -2,6 +2,7 @@ const FifaToken = artifacts.require('./FifaToken.sol');
 require('chai')
 	.use(require('chai-as-promised'))
 	.should()
+const truffleAssert = require('truffle-assertions');
 
 contract('FifaToken',(accounts) => {
 	let contract;
@@ -48,6 +49,8 @@ describe('mint function test', async() => {
 			club: "FC Barcelona",
 			country: "Argentina"
 		};
+		const checkBalance = await contract.balanceOf.call(accounts[0]);
+		assert.equal(checkBalance,0,'Account balance is zero');
 		const result = await contract.mint(player1);
 		const totalSupply = await contract.totalSupply();
 		//SUCCESS
@@ -70,50 +73,59 @@ describe('mint function test', async() => {
 describe('balanceOf function test', async() => {
 	it('checks if balance of minter increases, and balance of non-minter stays the same', async() => {
 		//Minter Balance = 1 due to previous test.
-		const balanceOf1 = contract.balanceOf.call(accounts[0]);
-		assert(balanceOf1,1,'Balance has been updated');
+		const balanceOf1 = await contract.balanceOf.call(accounts[0]);
+		assert.equal(balanceOf1,1,'Balance has been updated');
 
 		//Non-Minter balance should be 0.
-		const balanceof2 = contract.balanceOf.call(accounts[1]);
-		assert(balanceof2,0,'Balance is zero');
+		const balanceof2 = await contract.balanceOf(accounts[1]);
+		assert.equal(balanceof2,0,'Balance is zero');
 	})
 })
 
 describe('ownerOf function test', async() => {
 	it('checks if correct owner is returned for a token ID', async() => {
 		const ownerOf = await contract.ownerOf.call(0);
-		assert(ownerOf,accounts[0],'Correct owner identified');
+		assert.equal(ownerOf,accounts[0],'Correct owner identified');
 	})
 })
 
 describe('transferFrom and safeTransferFrom function test', async() => {
 	it('Ensures token transfer via safeTransferFrom method by checking balances', async() => {
-		const balanceOf1 = contract.balanceOf.call(accounts[0]);
-		const balanceof2 = contract.balanceOf.call(accounts[1]);
-		//Checking pre-transfer balance
-		assert(balanceOf1,1,'Balance is 1');
-		assert(balanceof2,0,'Balance is 0');
 
-		await contract.safeTransferFrom.call(accounts[0],accounts[1],0);
-		//Checking post-transfer balance
-		assert(balanceOf1,0,'Balance is 0');
-		assert(balanceof2,1,'Balance is 1');
+		const safeTX = await contract.safeTransferFrom.call(accounts[0],accounts[1],0);
+		
+		const ownerOf = await contract.ownerOf.call(0)
+		assert.equal(ownerOf,accounts[1],'Token successfully transferred');
 	})
 	it('Verifies safeTransferFrom with data', async() =>{
 		const ownerOf = await contract.ownerOf.call(0);
-		assert(ownerOf,accounts[1],'Owner verified');
+		assert.equal(ownerOf,accounts[1],'Owner verified');
 
 		await contract.safeTransferFrom.call(accounts[1],accounts[0], 0, '0x987123');
 
-		assert(ownerOf,accounts[0],'Owner verified');
+		assert.equal(ownerOf,accounts[0],'Owner verified');
 	})
 	it('tests the transferFrom function', async() => {
 		const ownerOf = await contract.ownerOf.call(0);
-		assert(ownerOf,accounts[0],'Owner verified');
+		assert.equal(ownerOf,accounts[0],'Owner verified');
 
 		await contract.transferFrom.call(accounts[0],accounts[1],0);
 
-		assert(ownerOf,accounts[1],'Owner verified');
+		assert.equal(ownerOf,accounts[1],'Owner verified');
 	})
 })
+
+// describe('approve function test', async() => {
+// 	it('Ensures whether approved',async() => {
+// 		await contract.mint({
+// 			name: "Ronaldo",
+// 			position: "Winger",
+// 			club: "Juventus",
+// 			country: "Portugal"
+// 		});
+// 	await contract.approve.call(accounts[1],1, {from: accounts[0]});
+// 	const approvedAddress = contract.getApproved.call(1,{from: accounts[1]});
+// 	assert.equal(approve,'Approval','correct event emitted');
+// 	})
+// })
 })
