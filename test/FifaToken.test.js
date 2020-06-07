@@ -34,11 +34,13 @@ describe('deployment',async() => {
 
 describe('ERC 165 compliance', async() => {
 	it('Checks if Token is ERC 165 compliant', async() => {
-		const ERC165test = await contract.supportsInterface.call('0x01ffc9a7') //0x01ffc9a7 is ERC165 interface ID.
+		const ERC165test = await contract.supportsInterface.call('0x01ffc9a7'); //0x01ffc9a7 is ERC165 interface ID.
+		assert.equal(ERC165test,true,'Token is ERC165 compliant');
 	})
+
 })
 
-describe('minting', async() => {
+describe('mint function test', async() => {
 	it('creates a new token', async () => {
 		const player1 = {
 			name: "Messi",
@@ -62,6 +64,18 @@ describe('minting', async() => {
 			club: "FC Barcelona",
 			country: "Argentina"
 		}).should.be.rejected;
+	})
+})
+
+describe('balanceOf function test', async() => {
+	it('checks if balance of minter increases, and balance of non-minter stays the same', async() => {
+		//Minter Balance = 1 due to previous test.
+		const balanceOf1 = contract.balanceOf.call(accounts[0]);
+		assert(balanceOf1,1,'Balance has been updated');
+
+		//Non-Minter balance should be 0.
+		const balanceof2 = contract.balanceOf.call(accounts[1]);
+		assert(balanceof2,0,'Balance is zero');
 	})
 })
 })
