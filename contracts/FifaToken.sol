@@ -23,7 +23,7 @@ contract FifaToken is ERC721 {
 	}
 
 	function mint(Player memory _player) public {
-		require(_playerExists[_player.name] = false, "Player token already exists");
+		require(_playerExists[_player.name] == false, "Player token already exists");
 		players.push(_player);
 		uint _id = players.length - 1;
 		_playerExists[_player.name] = true;

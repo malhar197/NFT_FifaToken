@@ -32,4 +32,17 @@ describe('deployment',async() => {
 	})
 })
 
+describe('minting', async() => {
+	it('creates a new token', async () => {
+		const result = await contract.mint({
+			name: "Messi",
+			position: "Striker",
+			club: "FC Barcelona",
+			country: "Argentina"
+		});
+		const totalSupply = await contract.totalSupply();
+		assert.equal(totalSupply,1);
+	})
+})
+
 })
