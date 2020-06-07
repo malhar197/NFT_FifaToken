@@ -86,17 +86,34 @@ describe('ownerOf function test', async() => {
 	})
 })
 
-describe('safeTransferFrom function test', async() => {
+describe('transferFrom and safeTransferFrom function test', async() => {
 	it('Ensures token transfer via safeTransferFrom method by checking balances', async() => {
 		const balanceOf1 = contract.balanceOf.call(accounts[0]);
 		const balanceof2 = contract.balanceOf.call(accounts[1]);
 		//Checking pre-transfer balance
 		assert(balanceOf1,1,'Balance is 1');
 		assert(balanceof2,0,'Balance is 0');
+
 		await contract.safeTransferFrom.call(accounts[0],accounts[1],0);
 		//Checking post-transfer balance
 		assert(balanceOf1,0,'Balance is 0');
 		assert(balanceof2,1,'Balance is 1');
+	})
+	it('Verifies safeTransferFrom with data', async() =>{
+		const ownerOf = await contract.ownerOf.call(0);
+		assert(ownerOf,accounts[1],'Owner verified');
+
+		await contract.safeTransferFrom.call(accounts[1],accounts[0], 0, '0x987123');
+
+		assert(ownerOf,accounts[0],'Owner verified');
+	})
+	it('tests the transferFrom function', async() => {
+		const ownerOf = await contract.ownerOf.call(0);
+		assert(ownerOf,accounts[0],'Owner verified');
+
+		await contract.transferFrom.call(accounts[0],accounts[1],0);
+
+		assert(ownerOf,accounts[1],'Owner verified');
 	})
 })
 })
