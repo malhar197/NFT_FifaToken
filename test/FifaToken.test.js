@@ -85,4 +85,18 @@ describe('ownerOf function test', async() => {
 		assert(ownerOf,accounts[0],'Correct owner identified');
 	})
 })
+
+describe('safeTransferFrom function test', async() => {
+	it('Ensures token transfer via safeTransferFrom method by checking balances', async() => {
+		const balanceOf1 = contract.balanceOf.call(accounts[0]);
+		const balanceof2 = contract.balanceOf.call(accounts[1]);
+		//Checking pre-transfer balance
+		assert(balanceOf1,1,'Balance is 1');
+		assert(balanceof2,0,'Balance is 0');
+		await contract.safeTransferFrom.call(accounts[0],accounts[1],0);
+		//Checking post-transfer balance
+		assert(balanceOf1,0,'Balance is 0');
+		assert(balanceof2,1,'Balance is 1');
+	})
+})
 })
