@@ -161,4 +161,8 @@ describe('transferFrom and safeTransferFrom function test', async() => {
 		assert.equal(ownerOf,accounts[1],'Owner verified');
 	})
 })
+
+// describe('Event tests', async() => {
+// 	it('')
+// })
 })
